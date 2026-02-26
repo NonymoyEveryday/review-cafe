@@ -39,15 +39,17 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/cafes" element={<CafeList />} />
           <Route path="/cafe/:id" element={<CafeDetail role={role} />} />
-          <Route path="/profile" element={role ? <EditProfile setUser={setUser} /> : <Navigate to="/login" />} />
           
-          
+         
           <Route path="/admin" element={role === "admin" ? <Admin /> : <Navigate to="/login" />} />
           <Route path="/admin/categories" element={role === "admin" ? <AdminCategory /> : <Navigate to="/login" />} />
           <Route path="/admin/details" element={role === "admin" ? <AdminCafe /> : <Navigate to="/login" />} />
           <Route path="/admin/reviews" element={role === "admin" ? <AdminReview /> : <Navigate to="/login" />} />
           
-        
+   
+          <Route path="/profile" element={role ? <EditProfile setUser={setUser} /> : <Navigate to="/login" />} />
+          
+
           <Route path="/login" element={<Login setRole={setRole} setUser={setUser} />} />
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<h1 className="text-center mt-5">404 - Page Not Found</h1>} />

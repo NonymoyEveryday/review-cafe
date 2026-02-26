@@ -54,7 +54,7 @@ function AdminReview() {
 
   return (
     <div className="container mt-4 mb-5">
-      <h2 className="mb-4 fw-bold">จัดการรีวิว (Admin)</h2>
+      <h2 className="mb-4 fw-bold">จัดการรีวิว</h2>
       
       <div className="card shadow-sm">
         <div className="card-body">

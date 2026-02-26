@@ -47,7 +47,7 @@ function Home() {
         <h1 className="fw-bold display-4 mb-3">ค้นหาคาเฟ่ที่ใช่ สำหรับคุณ ☕</h1>
         <p className="lead mb-4">รีวิวคาเฟ่ บรรยากาศดี กาแฟอร่อย ที่เรารวบรวมมาให้คุณแล้ว</p>
         
-        <form onSubmit={handleSearch} className="search-form d-flex w-50 shadow-sm">
+        <form onSubmit={handleSearch} className="b1">
           <input 
             type="text" 
             className="form-control form-control-lg border-0" 

@@ -144,7 +144,7 @@ function AdminCafe() {
 
   return (
     <div className="container mt-4 mb-5">
-      <h2 className="mb-4 fw-bold">จัดการข้อมูลคาเฟ่ (Admin)</h2>
+      <h2 className="mb-4 fw-bold">จัดการข้อมูลคาเฟ่</h2>
 
       {showForm ? (
         <div className="card shadow-sm">

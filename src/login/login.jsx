@@ -47,7 +47,7 @@ function Login({ setRole, setUser }) {
       e.preventDefault();
       handleLogin();
     }} className="w-50 mx-auto mt-5">
-      <h1 className="text-center">เข้าสู่ระบบ</h1>
+      <h1 className="text-center">ยินดีต้อนรับเข้าสู่ระบบ</h1>
 
       <Form.Group className="mb-3">
         <Form.Label>ชื่อผู้ใช้</Form.Label>
@@ -76,7 +76,8 @@ function Login({ setRole, setUser }) {
         <Button 
           variant="outline-secondary" 
           type="button" 
-          onClick={() => navigate('/register')}
+          onClick={() => navigate('/register')} 
+         
         >
           สมัครสมาชิก
         </Button>

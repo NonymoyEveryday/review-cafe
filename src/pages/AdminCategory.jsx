@@ -98,7 +98,7 @@ function AdminCategory() {
 
   return (
     <div className="container mt-4 mb-5">
-      <h2 className="mb-4 fw-bold">จัดการหมวดหมู่คาเฟ่ (Admin)</h2>
+      <h2 className="mb-4 fw-bold">จัดการหมวดหมู่คาเฟ่</h2>
 
       {showForm ? (
         <div className="card shadow-sm w-50 mb-4">

@@ -1,83 +1,90 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom"; 
 import axios from "axios";
 import CafeCard from "../components/CafeCard";
+import { useNavigate } from "react-router-dom";
 
 function CafeList() {
+  const navigate = useNavigate();
   const [cafes, setCafes] = useState([]);
+  const [categories, setCategories] = useState([]); 
+  const [selectedCategory, setSelectedCategory] = useState("all"); 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
- 
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const searchQuery = searchParams.get("search") || ""; 
 
   useEffect(() => {
    
-    axios.get("http://localhost/backend/routes/cafes.php")
-      .then((res) => {
-        setCafes(res.data);
+    const fetchData = async () => {
+      try {
+        const [catRes, cafeRes] = await Promise.all([
+          axios.get("http://localhost/backend/routes/categories.php"),
+          axios.get("http://localhost/backend/routes/cafes.php")
+        ]);
+        
+       
+        if (Array.isArray(catRes.data)) setCategories(catRes.data);
+        if (Array.isArray(cafeRes.data)) setCafes(cafeRes.data);
+      } catch (err) {
+        console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", err);
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("เกิดข้อผิดพลาดในการดึงข้อมูลคาเฟ่");
-        setLoading(false);
-      });
-  }, []); 
+      }
+    };
+
+    fetchData();
+  }, []);
 
  
-  const filteredCafes = cafes.filter(cafe => {
-    if (!searchQuery) return true; 
-    
-  
-    const lowerCaseQuery = searchQuery.toLowerCase();
-    const matchName = cafe.name.toLowerCase().includes(lowerCaseQuery);
-    const matchDesc = cafe.description && cafe.description.toLowerCase().includes(lowerCaseQuery);
-    
-    return matchName || matchDesc;
-  });
+  const filteredCafes = selectedCategory === "all" 
+    ? cafes 
+    : cafes.filter(cafe => cafe.category_id === selectedCategory);
 
-
-  if (loading) {
-    return (
-      <div className="text-center mt-5">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-        <p className="mt-2 text-muted">กำลังโหลดข้อมูลคาเฟ่...</p>
-      </div>
-    );
-  }
-
-  
-  if (error) {
-    return (
-      <div className="alert alert-danger mt-5 text-center" role="alert">
-        {error}
-      </div>
-    );
-  }
+  if (loading) return <div className="text-center mt-5"><div className="spinner-border text-primary"></div></div>;
 
   return (
-    <div className="mt-4 mb-5">
+    <div className="container mt-4 mb-5">
+      <button 
+        className="btn btn-outline-secondary mb-3" 
+        onClick={() => navigate('/')}
+      >
+        &laquo; ย้อนกลับ
+      </button>
+      <h2 className="text-center mb-4 fw-bold">คาเฟ่ทั้งหมดของเรา</h2>
+
+    
+      <div className="d-flex justify-content-center flex-wrap gap-2 mb-4 border-bottom pb-3">
       
-      <h2 className="mb-4 text-center fw-bold text-dark">
-        {searchQuery ? `🔍 ผลการค้นหาสำหรับ: "${searchQuery}"` : "รายการคาเฟ่ทั้งหมด ☕"}
-      </h2>
-      
-      <div className="row">
+        <button 
+          className={`btn rounded-pill px-4 ${selectedCategory === "all" ? "btn-primary shadow-sm" : "btn-outline-secondary"}`}
+          onClick={() => setSelectedCategory("all")}
+        >
+          ทั้งหมด
+        </button>
+        
+       
+        {categories.map(cat => (
+          <button 
+            key={cat.id}
+            className={`btn rounded-pill px-4 ${selectedCategory === cat.id ? "btn-primary shadow-sm" : "btn-outline-secondary"}`}
+            onClick={() => setSelectedCategory(cat.id)}
+          >
+            {cat.name}
+          </button>
+        ))}
+      </div>
+
+     
+      <div className="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
         {filteredCafes.length > 0 ? (
-          filteredCafes.map((cafe) => (
-            <div key={cafe.id} className="col-12 col-md-6 col-lg-4 mb-4">
+          filteredCafes.map(cafe => (
+            <div className="col" key={cafe.id}>
               <CafeCard cafe={cafe} />
             </div>
           ))
         ) : (
-         
-          <div className="col-12 text-center text-muted py-5 border rounded bg-light">
-            <h4>{searchQuery ? "ไม่พบคาเฟ่ที่คุณค้นหา 😥" : "ยังไม่มีข้อมูลคาเฟ่ในระบบ 😥"}</h4>
+          <div className="col-12 text-center mt-5">
+            <h4 className="text-muted">😢 ไม่พบคาเฟ่ในหมวดหมู่นี้</h4>
+            <button className="btn btn-outline-primary mt-3" onClick={() => setSelectedCategory("all")}>
+              ดูคาเฟ่ทั้งหมด
+            </button>
           </div>
         )}
       </div>

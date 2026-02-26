@@ -26,9 +26,24 @@
     font-size: 20px;
     padding: 10px 20px;
     transition: background-color 0.3s ease;
+
 }
 .nav1 a:hover {
     background-color: #2b2d4d;
     color: #d78f9b !important;
     border-radius: 5px;
+
 }
+.btn1 {
+    background-color: #b88dc5;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.btn1:hover {
+    background-color: #d78f9b;
+}
+
