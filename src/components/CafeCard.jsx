@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import RatingStars from "./RatingStars"; // อย่าลืมดึง component ดาวมาใช้
+import RatingStars from "./RatingStars"; 
 
 function CafeCard({ cafe }) {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ function CafeCard({ cafe }) {
       <div className="card-body">
         <h5 className="card-title fw-bold text-truncate">{cafe.name}</h5>
         
-        {/* === ส่วนที่เพิ่มเข้ามา: แสดงดาวและจำนวนรีวิว === */}
+       
         <div className="d-flex align-items-center mb-2">
           <RatingStars rating={cafe.avg_rating || 0} readOnly={true} />
           <small className="ms-2 text-muted">

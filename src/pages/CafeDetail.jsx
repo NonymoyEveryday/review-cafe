@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom"; // นำเข้า Link เพิ่ม
+import { useParams, useNavigate, Link } from "react-router-dom"; 
 import axios from "axios";
 import CommentList from "../components/CommentList";
 import RatingStars from "../components/RatingStars";
 
-// 1. รับ props role มาจาก App.jsx
+
 function CafeDetail({ role }) {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -51,14 +51,14 @@ function CafeDetail({ role }) {
     setIsSubmitting(true);
 
     try {
-      // ไม่ต้องส่ง user_id ไปแล้ว ให้ Backend จัดการดึงจาก Session เอง
+      
       const reviewData = {
         cafe_id: id,
         rating: rating,
         comment: commentText
       };
 
-      // 2. ต้องใส่ withCredentials: true เสมอ เพื่อให้ส่ง Session Cookie ไปด้วย
+     
       const res = await axios.post("http://localhost/backend/routes/reviews.php", reviewData, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true 
@@ -69,7 +69,7 @@ function CafeDetail({ role }) {
         setRating(0);
         setCommentText("");
         
-        // โหลดคอมเมนต์ใหม่ทันที
+      
         const newReviewRes = await axios.get(`http://localhost/backend/routes/reviews.php?cafe_id=${id}`);
         setComments(newReviewRes.data);
       } else {
@@ -121,7 +121,7 @@ function CafeDetail({ role }) {
 
       <div className="row">
         <div className="col-lg-8 mx-auto">
-          {/* 3. ดักเช็คว่าล็อกอินหรือยัง ถ้ามี role ถึงจะแสดงฟอร์ม */}
+         
           {role ? (
             <div className="card shadow-sm mb-5 border-0 bg-light">
               <div className="card-body p-4">
@@ -150,7 +150,7 @@ function CafeDetail({ role }) {
             </div>
           )}
 
-          {/* ส่วนแสดงรายการคอมเมนต์ (โชว์ให้ทุกคนเห็น) */}
+         
           <CommentList comments={comments} />
         </div>
       </div>

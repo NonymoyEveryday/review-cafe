@@ -7,7 +7,7 @@ import axios from "axios";
 function Register() {
   const navigate = useNavigate();
   
-  // สร้าง State สำหรับเก็บข้อมูลฟอร์ม
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -15,21 +15,18 @@ function Register() {
     password: "",
   });
 
-  // State สำหรับเก็บไฟล์รูปภาพ และ รูปพรีวิว
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
-  // จัดการเมื่อพิมพ์ข้อความ
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // จัดการเมื่อเลือกไฟล์รูปภาพ
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImageFile(file);
-      // สร้าง URL จำลองเพื่อเอาไปแสดงเป็นรูปพรีวิว
       setImagePreview(URL.createObjectURL(file)); 
     }
   };
@@ -37,14 +34,13 @@ function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    // เนื่องจากมีไฟล์รูปภาพ ต้องส่งข้อมูลแบบ FormData แทน JSON
+ 
     const data = new FormData();
     data.append("username", formData.username);
     data.append("email", formData.email);
     data.append("tel", formData.tel);
     data.append("password", formData.password);
     
-    // ถ้ามีการเลือกรูปภาพ ให้แนบไปด้วย
     if (imageFile) {
       data.append("image", imageFile);
     }
@@ -75,7 +71,6 @@ function Register() {
     <Form onSubmit={handleRegister} className="w-50 mx-auto mt-5 p-4 border rounded shadow-sm bg-white">
       <h2 className="text-center mb-4">สมัครสมาชิก</h2>
 
-      {/* ================= ส่วนแสดงรูปพรีวิว ================= */}
       <div className="text-center mb-4">
         <div 
           className="mx-auto border d-flex justify-content-center align-items-center overflow-hidden" 

@@ -12,7 +12,7 @@ function AdminCategory() {
     slug: ""
   });
 
-  // โหลดข้อมูลเมื่อเปิดหน้า
+ 
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -66,7 +66,7 @@ function AdminCategory() {
       if (res.data.status === "success") {
         alert(res.data.message);
         setShowForm(false);
-        fetchCategories(); // โหลดตารางใหม่
+        fetchCategories(); 
       } else {
         alert("เกิดข้อผิดพลาด: " + res.data.message);
       }
@@ -101,7 +101,6 @@ function AdminCategory() {
       <h2 className="mb-4 fw-bold">จัดการหมวดหมู่คาเฟ่ (Admin)</h2>
 
       {showForm ? (
-        /* ================= ฟอร์มเพิ่ม/แก้ไข ================= */
         <div className="card shadow-sm w-50 mb-4">
           <div className="card-header bg-dark text-white">
             <h5 className="mb-0">{isEditing ? "แก้ไขหมวดหมู่" : "เพิ่มหมวดหมู่ใหม่"}</h5>
@@ -134,7 +133,7 @@ function AdminCategory() {
           </div>
         </div>
       ) : (
-        /* ================= ตารางแสดงข้อมูล ================= */
+        
         <div className="card shadow-sm">
           <div className="card-body">
             <button className="btn btn-primary mb-3" onClick={handleAddNew}>+ เพิ่มหมวดหมู่ใหม่</button>

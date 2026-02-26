@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import CafeCard from "./CafeCard";
-import "./Home.css"; // ไฟล์ CSS สำหรับตกแต่งแบนเนอร์
+import "./Home.css"; 
 
 function Home() {
   const [popularCafes, setPopularCafes] = useState([]);
@@ -11,15 +11,15 @@ function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // ดึงข้อมูลคาเฟ่เพื่อมาแสดงในหมวดยอดนิยม
+    
     const fetchPopularCafes = async () => {
       try {
         const res = await axios.get("http://localhost/backend/routes/cafes.php");
         
-        // จัดเรียงคาเฟ่ตามยอดวิว (view_count) จากมากไปน้อย
+     
         const sortedCafes = res.data.sort((a, b) => (b.view_count || 0) - (a.view_count || 0));
         
-        // ตัดมาโชว์แค่ 3 อันดับแรก
+    
         setPopularCafes(sortedCafes.slice(0, 3));
         setLoading(false);
       } catch (err) {
@@ -31,18 +31,18 @@ function Home() {
     fetchPopularCafes();
   }, []);
 
-  // ฟังก์ชันจัดการเมื่อกดค้นหา
+  
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim() !== "") {
-      // ส่งคำค้นหาไปที่หน้า /cafes ผ่าน Query String
+      
       navigate(`/cafes?search=${searchQuery}`);
     }
   };
 
   return (
     <div className="mb-5">
-      {/* ================= Hero Section (ส่วนแบนเนอร์และค้นหา) ================= */}
+      
       <div className="hero-section text-center text-white d-flex flex-column justify-content-center align-items-center mb-5 shadow">
         <h1 className="fw-bold display-4 mb-3">ค้นหาคาเฟ่ที่ใช่ สำหรับคุณ ☕</h1>
         <p className="lead mb-4">รีวิวคาเฟ่ บรรยากาศดี กาแฟอร่อย ที่เรารวบรวมมาให้คุณแล้ว</p>
@@ -66,7 +66,7 @@ function Home() {
         </form>
       </div>
 
-      {/* ================= Popular Cafes Section (คาเฟ่ยอดนิยม) ================= */}
+     
       <div className="container mt-5">
         <div className="d-flex justify-content-between align-items-end mb-4">
           <h2 className="fw-bold mb-0">🔥 คาเฟ่ยอดนิยม</h2>

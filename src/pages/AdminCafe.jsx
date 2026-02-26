@@ -22,11 +22,10 @@ function AdminCafe() {
     fetchCategories();
   }, []);
 
-  // 1. แก้ไข Path ให้ชี้ไปที่ routes/cafes.php
+
   const fetchCafes = async () => {
     try {
       const res = await axios.get("http://localhost/backend/routes/cafes.php");
-      // เช็คว่าถ้าไม่มีข้อมูล Backend อาจจะส่งมาเป็นสตริงว่างๆ ให้เซ็ตเป็น Array ว่างแทน
       if (Array.isArray(res.data)) {
         setCafes(res.data);
       } else {
@@ -37,7 +36,7 @@ function AdminCafe() {
     }
   };
 
-  // 2. แก้ไข Path ให้ชี้ไปที่ routes/categories.php
+
   const fetchCategories = async () => {
     try {
       const res = await axios.get("http://localhost/backend/routes/categories.php");
@@ -84,7 +83,7 @@ function AdminCafe() {
     setShowForm(false);
   };
 
-  // 3. แก้ไข Path บันทึกข้อมูลไปที่ routes/cafes.php
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -122,7 +121,6 @@ function AdminCafe() {
     }
   };
 
-  // 4. แก้ไข Path ลบข้อมูลไปที่ routes/cafes.php
   const handleDelete = async (id) => {
     if (window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบคาเฟ่นี้?")) {
       try {

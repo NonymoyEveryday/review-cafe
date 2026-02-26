@@ -10,7 +10,7 @@ function AdminReview() {
 
   const fetchReviews = async () => {
     try {
-      // ดึงรีวิวทั้งหมดแบบโหมด admin
+      
       const res = await axios.get("http://localhost/backend/routes/reviews.php?admin=true");
       setReviews(res.data);
     } catch (err) {
@@ -27,7 +27,7 @@ function AdminReview() {
 
       if (res.data.status === "success") {
         alert("อนุมัติรีวิวสำเร็จ!");
-        fetchReviews(); // โหลดข้อมูลตารางใหม่
+        fetchReviews(); 
       }
     } catch (err) {
       console.error(err);

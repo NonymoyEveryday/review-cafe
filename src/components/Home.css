@@ -1,17 +1,17 @@
-/* ตกแต่งส่วน Hero Banner */
+
 .hero-section {
-  /* ใส่ภาพพื้นหลังของคาเฟ่ (เปลี่ยน URL รูปภาพได้ตามต้องการ) */
+  
   background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80');
   background-size: cover;
   background-position: center;
-  height: 50vh; /* ความสูงของแบนเนอร์ */
+  height: 50vh; 
   min-height: 400px;
-  border-radius: 15px; /* ทำให้มุมขอบมน */
+  border-radius: 15px; 
   margin-top: 10px;
   padding: 20px;
 }
 
-/* ทำให้ช่องค้นหาบนมือถือไม่หดเล็กจนเกินไป */
+
 @media (max-width: 768px) {
   .hero-section .search-form {
     width: 90% !important;

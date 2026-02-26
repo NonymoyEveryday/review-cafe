@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
-// 1. รับ setUser มาจาก App.jsx
-function Login({ setUser }) { 
+
+function Login({ setRole, setUser }) { 
   const navigate = useNavigate();
   const [username, setusername] = useState("");
   const [password, setPassword] = useState("");
@@ -19,14 +19,13 @@ function Login({ setUser }) {
       );
 
       if (res.data.status === "success") {
-        const user = res.data.user;
+        const loggedInUser = res.data.user;
 
-        // 2. อัปเดตข้อมูล User ไปให้ App.jsx ทันที
-        if (setUser) {
-          setUser(user); 
-        }
+        
+        if (setRole) setRole(loggedInUser.role);
+        if (setUser) setUser(loggedInUser); 
 
-        if (user?.role === "admin") {
+        if (loggedInUser?.role === "admin") {
           alert("เข้าสู่ระบบสำเร็จในฐานะ Admin");
           navigate("/admin");
         } else {
@@ -48,7 +47,7 @@ function Login({ setUser }) {
       e.preventDefault();
       handleLogin();
     }} className="w-50 mx-auto mt-5">
-      <h1 className="text-center">ยินดีต้อนรับเข้าสู่ระบบ</h1>
+      <h1 className="text-center">เข้าสู่ระบบ</h1>
 
       <Form.Group className="mb-3">
         <Form.Label>ชื่อผู้ใช้</Form.Label>
@@ -70,7 +69,6 @@ function Login({ setUser }) {
         />
       </Form.Group>
 
-      {/* 3. จัดปุ่มให้อยู่ข้างกันด้วย d-flex และ gap-3 */}
       <div className="d-flex justify-content-center gap-3">
         <Button variant="primary" type="submit">
           เข้าสู่ระบบ
@@ -78,7 +76,7 @@ function Login({ setUser }) {
         <Button 
           variant="outline-secondary" 
           type="button" 
-          onClick={() => navigate('/register')}A
+          onClick={() => navigate('/register')}
         >
           สมัครสมาชิก
         </Button>
