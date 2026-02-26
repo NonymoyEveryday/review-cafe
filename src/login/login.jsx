@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
-// 1. รับ setRole มาจาก App.jsx
-function Login({ setRole }) {
+// 1. รับ setUser มาจาก App.jsx
+function Login({ setUser }) { 
   const navigate = useNavigate();
   const [username, setusername] = useState("");
   const [password, setPassword] = useState("");
@@ -21,9 +21,9 @@ function Login({ setRole }) {
       if (res.data.status === "success") {
         const user = res.data.user;
 
-        // 2. อัปเดต Role ไปที่ App.jsx ทันที!
-        if (setRole) {
-          setRole(user.role);
+        // 2. อัปเดตข้อมูล User ไปให้ App.jsx ทันที
+        if (setUser) {
+          setUser(user); 
         }
 
         if (user?.role === "admin") {
@@ -47,8 +47,8 @@ function Login({ setRole }) {
     <Form onSubmit={(e) => {
       e.preventDefault();
       handleLogin();
-    }} className="w-50 mx-auto mt-5 p-4 border rounded shadow-sm">
-      <h1 className="text-center mb-4">ยินดีต้อนรับเข้าสู่ระบบ</h1>
+    }} className="w-50 mx-auto mt-5">
+      <h1 className="text-center">ยินดีต้อนรับเข้าสู่ระบบ</h1>
 
       <Form.Group className="mb-3">
         <Form.Label>ชื่อผู้ใช้</Form.Label>
@@ -60,7 +60,7 @@ function Login({ setRole }) {
         />
       </Form.Group>
 
-      <Form.Group className="mb-4">
+      <Form.Group className="mb-3">
         <Form.Label>รหัสผ่าน</Form.Label>
         <Form.Control
           type="password"
@@ -70,12 +70,16 @@ function Login({ setRole }) {
         />
       </Form.Group>
 
-      {/* เพิ่มปุ่มสมัครสมาชิกข้างๆ เข้าสู่ระบบ */}
+      {/* 3. จัดปุ่มให้อยู่ข้างกันด้วย d-flex และ gap-3 */}
       <div className="d-flex justify-content-center gap-3">
         <Button variant="primary" type="submit">
           เข้าสู่ระบบ
         </Button>
-        <Button variant="outline-secondary" type="button" onClick={() => navigate('/register')}>
+        <Button 
+          variant="outline-secondary" 
+          type="button" 
+          onClick={() => navigate('/register')}A
+        >
           สมัครสมาชิก
         </Button>
       </div>

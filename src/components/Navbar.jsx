@@ -5,7 +5,7 @@ import "./Navbar.css";
 // รับทั้ง role และ setRole มาจาก App.jsx
 function Navbar({ role, setRole }) {
   const navigate = useNavigate();
-
+  
   // ฟังก์ชันสำหรับออกจากระบบ
   const handleLogout = async () => {
     try {
@@ -47,7 +47,7 @@ function Navbar({ role, setRole }) {
           // ถ้าล็อกอินแล้ว (ไม่ว่าจะเป็น user หรือ admin)
           <>
             <span style={{ color: "white", fontSize: "16px" }}>
-              สถานะ: <strong className="text-warning">{role}</strong>
+              ยินดีต้อนรับ , <strong className="text-warning">{user}</strong>
             </span>
             <button onClick={handleLogout} className="btn btn-danger btn-sm">
               Logout
