@@ -26,8 +26,10 @@ function Navbar({ user, setUser }) {
         {user?.role === "admin" && (
           <>
             <NavLink to="/admin" className="btn btn-dark">Admin Dashboard</NavLink>
-            <NavLink to="/admin/categories" className="btn btn-dark">จัดการหมวดหมู่</NavLink>
-            <NavLink to="/admin/details" className="btn btn-dark">จัดการรายละเอียด</NavLink>
+            <NavLink to="/Admincafe" className="btn btn-dark">จัดการผู้ใช้</NavLink>
+            <NavLink to="/Cafedetail" className="btn btn-dark">จัดการหมวดหมู่</NavLink>
+            <NavLink to="/cafes" className="btn btn-dark">จัดการคาเฟ่</NavLink>
+
           </>
         )}
       </div>
@@ -38,7 +40,7 @@ function Navbar({ user, setUser }) {
           // ถ้ามีข้อมูล user (ล็อกอินแล้ว) ให้ซ่อนปุ่ม Login แล้วโชว์ชื่อแทน
           <>
             <span style={{ color: "white", marginRight: "15px", fontSize: "18px" }}>
-              สวัสดี, {user.username}
+              ยินดีต้อนรับ, {user.username}
             </span>
             <button onClick={handleLogout} className="btn btn-outline-light btn-sm mr-2" style={{ marginRight: "10px" }}>
               Logout

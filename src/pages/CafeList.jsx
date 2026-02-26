@@ -1,17 +1,22 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom"; // นำเข้า useLocation
 import axios from "axios";
-import CafeCard from "../components/CafeCard"; // นำเข้า CafeCard ที่เราสร้างไว้
+import CafeCard from "../components/CafeCard";
 
 function CafeList() {
   const [cafes, setCafes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // 1. ดึง Query String จาก URL
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get("search") || ""; // ถ้าไม่มีให้เป็นค่าว่าง
+
   useEffect(() => {
-    // เรียกดึงข้อมูลจาก Backend (อย่าลืมเปลี่ยน URL ให้ตรงกับไฟล์ PHP ของคุณ)
-    axios.get("http://localhost/backend/api/cafes.php")
+    // 2. ดึงข้อมูลคาเฟ่ทั้งหมดจาก Backend (ใช้ไฟล์ routes/cafes.php ที่เราปรับล่าสุด)
+    axios.get("http://localhost/backend/routes/cafes.php")
       .then((res) => {
-        // สมมติว่า Backend ส่งเป็น Array กลับมาเลย
         setCafes(res.data);
         setLoading(false);
       })
@@ -20,9 +25,21 @@ function CafeList() {
         setError("เกิดข้อผิดพลาดในการดึงข้อมูลคาเฟ่");
         setLoading(false);
       });
-  }, []);
+  }, []); // [] หมายถึงดึงข้อมูลแค่ครั้งเดียวตอนโหลดหน้า
 
-  // หน้าจอตอนกำลังโหลดข้อมูล
+  // 3. กรองข้อมูลคาเฟ่ตามคำค้นหา (เช็คทั้งจาก ชื่อคาเฟ่ และ คำอธิบาย)
+  const filteredCafes = cafes.filter(cafe => {
+    if (!searchQuery) return true; // ถ้าไม่ได้ค้นหาอะไรเลย ให้แสดงทั้งหมด
+    
+    // แปลงทุกอย่างเป็นพิมพ์เล็ก (toLowerCase) เพื่อให้ค้นหาเจอแม้พิมพ์ตัวใหญ่หรือตัวเล็กสลับกัน
+    const lowerCaseQuery = searchQuery.toLowerCase();
+    const matchName = cafe.name.toLowerCase().includes(lowerCaseQuery);
+    const matchDesc = cafe.description && cafe.description.toLowerCase().includes(lowerCaseQuery);
+    
+    return matchName || matchDesc;
+  });
+
+  // แสดงตอนกำลังโหลด
   if (loading) {
     return (
       <div className="text-center mt-5">
@@ -34,7 +51,7 @@ function CafeList() {
     );
   }
 
-  // หน้าจอตอนเกิด Error (เช่น ลืมเปิด XAMPP หรือ URL ผิด)
+  // แสดงตอน Error
   if (error) {
     return (
       <div className="alert alert-danger mt-5 text-center" role="alert">
@@ -44,22 +61,23 @@ function CafeList() {
   }
 
   return (
-    <div className="mt-4">
-      <h2 className="mb-4 text-center fw-bold text-dark">รายการคาเฟ่ทั้งหมด ☕</h2>
+    <div className="mt-4 mb-5">
+      {/* 4. เปลี่ยนหัวข้อตามการค้นหา */}
+      <h2 className="mb-4 text-center fw-bold text-dark">
+        {searchQuery ? `🔍 ผลการค้นหาสำหรับ: "${searchQuery}"` : "รายการคาเฟ่ทั้งหมด ☕"}
+      </h2>
       
-      {/* ใช้ Bootstrap Grid จัดเรียง */}
       <div className="row">
-        {cafes.length > 0 ? (
-          cafes.map((cafe) => (
-            // จอเล็กแสดง 1 แถว (col-12), จอกลาง 2 แถว (col-md-6), จอใหญ่ 3 แถว (col-lg-4)
+        {filteredCafes.length > 0 ? (
+          filteredCafes.map((cafe) => (
             <div key={cafe.id} className="col-12 col-md-6 col-lg-4 mb-4">
               <CafeCard cafe={cafe} />
             </div>
           ))
         ) : (
-          // กรณีดึงข้อมูลสำเร็จ แต่ในฐานข้อมูลยังไม่มีคาเฟ่เลย
-          <div className="col-12 text-center text-muted py-5">
-            <h4>ยังไม่มีข้อมูลคาเฟ่ในระบบ 😥</h4>
+          // 5. กรณีค้นหาแล้วไม่เจออะไรเลย
+          <div className="col-12 text-center text-muted py-5 border rounded bg-light">
+            <h4>{searchQuery ? "ไม่พบคาเฟ่ที่คุณค้นหา 😥" : "ยังไม่มีข้อมูลคาเฟ่ในระบบ 😥"}</h4>
           </div>
         )}
       </div>
