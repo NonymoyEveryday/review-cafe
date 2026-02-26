@@ -5,12 +5,10 @@ function AdminCafe() {
   const [cafes, setCafes] = useState([]);
   const [categories, setCategories] = useState([]);
   
-  // State สำหรับจัดการฟอร์ม
   const [showForm, setShowForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   
-  // ข้อมูลในฟอร์ม
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -19,43 +17,48 @@ function AdminCafe() {
   });
   const [imageFile, setImageFile] = useState(null);
 
-  // ดึงข้อมูลคาเฟ่และหมวดหมู่เมื่อโหลดหน้า
   useEffect(() => {
     fetchCafes();
     fetchCategories();
   }, []);
 
+  // 1. แก้ไข Path ให้ชี้ไปที่ routes/cafes.php
   const fetchCafes = async () => {
     try {
-      // เรียกใช้ API ตัวเดียวกับที่ผู้ใช้ทั่วไปใช้ได้เลย
-      const res = await axios.get("http://localhost/backend/api/cafes.php");
-      setCafes(res.data);
+      const res = await axios.get("http://localhost/backend/routes/cafes.php");
+      // เช็คว่าถ้าไม่มีข้อมูล Backend อาจจะส่งมาเป็นสตริงว่างๆ ให้เซ็ตเป็น Array ว่างแทน
+      if (Array.isArray(res.data)) {
+        setCafes(res.data);
+      } else {
+        setCafes([]);
+      }
     } catch (err) {
-      console.error(err);
+      console.error("ดึงข้อมูลคาเฟ่ไม่ได้:", err);
     }
   };
 
+  // 2. แก้ไข Path ให้ชี้ไปที่ routes/categories.php
   const fetchCategories = async () => {
     try {
-      // ต้องสร้างไฟล์ categories.php สำหรับดึงหมวดหมู่มาเป็นตัวเลือก (Dropdown)
-      const res = await axios.get("http://localhost/backend/api/categories.php");
-      setCategories(res.data);
+      const res = await axios.get("http://localhost/backend/routes/categories.php");
+      if (Array.isArray(res.data)) {
+        setCategories(res.data);
+      } else {
+        setCategories([]);
+      }
     } catch (err) {
-      console.error(err);
+      console.error("ดึงข้อมูลหมวดหมู่ไม่ได้:", err);
     }
   };
 
-  // จัดการเมื่อพิมพ์ข้อความลงฟอร์ม
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // จัดการเมื่อเลือกไฟล์รูปภาพ
   const handleFileChange = (e) => {
     setImageFile(e.target.files[0]);
   };
 
-  // เปิดฟอร์มสำหรับ "เพิ่ม"
   const handleAddNew = () => {
     setIsEditing(false);
     setEditId(null);
@@ -64,7 +67,6 @@ function AdminCafe() {
     setShowForm(true);
   };
 
-  // เปิดฟอร์มสำหรับ "แก้ไข"
   const handleEdit = (cafe) => {
     setIsEditing(true);
     setEditId(cafe.id);
@@ -74,20 +76,18 @@ function AdminCafe() {
       address: cafe.address || "",
       category_id: cafe.category_id || "",
     });
-    setImageFile(null); // กรณีแก้ไข ถ้าไม่เลือกรูปใหม่ ก็จะใช้รูปเดิมฝั่ง Backend
+    setImageFile(null);
     setShowForm(true);
   };
 
-  // ปิดฟอร์ม
   const handleCancel = () => {
     setShowForm(false);
   };
 
-  // บันทึกข้อมูล (เพิ่ม/แก้ไข)
+  // 3. แก้ไข Path บันทึกข้อมูลไปที่ routes/cafes.php
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // เนื่องจากมีการอัปโหลดไฟล์ ต้องใช้ FormData
     const data = new FormData();
     data.append("name", formData.name);
     data.append("description", formData.description);
@@ -100,19 +100,19 @@ function AdminCafe() {
     try {
       if (isEditing) {
         data.append("id", editId);
-        data.append("action", "update"); // ส่ง flag ไปบอก PHP ว่านี่คือการอัปเดต
+        data.append("action", "update");
       } else {
         data.append("action", "create");
       }
 
-      const res = await axios.post("http://localhost/backend/api/admin_manage_cafe.php", data, {
+      const res = await axios.post("http://localhost/backend/routes/cafes.php", data, {
         headers: { "Content-Type": "multipart/form-data" }
       });
 
       if (res.data.status === "success") {
         alert(isEditing ? "อัปเดตข้อมูลสำเร็จ" : "เพิ่มคาเฟ่สำเร็จ");
         setShowForm(false);
-        fetchCafes(); // โหลดข้อมูลตารางใหม่
+        fetchCafes();
       } else {
         alert("เกิดข้อผิดพลาด: " + res.data.message);
       }
@@ -122,15 +122,15 @@ function AdminCafe() {
     }
   };
 
-  // ลบข้อมูล
+  // 4. แก้ไข Path ลบข้อมูลไปที่ routes/cafes.php
   const handleDelete = async (id) => {
-    if (window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบคาเฟ่นี้? (ข้อมูลรีวิวที่เกี่ยวข้องอาจถูกลบด้วย)")) {
+    if (window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบคาเฟ่นี้?")) {
       try {
         const data = new FormData();
         data.append("action", "delete");
         data.append("id", id);
 
-        const res = await axios.post("http://localhost/backend/api/admin_manage_cafe.php", data);
+        const res = await axios.post("http://localhost/backend/routes/cafes.php", data);
         
         if (res.data.status === "success") {
           alert("ลบคาเฟ่สำเร็จ");
@@ -149,7 +149,6 @@ function AdminCafe() {
       <h2 className="mb-4 fw-bold">จัดการข้อมูลคาเฟ่ (Admin)</h2>
 
       {showForm ? (
-        /* ================== ฟอร์มเพิ่ม/แก้ไขคาเฟ่ ================== */
         <div className="card shadow-sm">
           <div className="card-header bg-dark text-white">
             <h5 className="mb-0">{isEditing ? "แก้ไขข้อมูลคาเฟ่" : "เพิ่มคาเฟ่ใหม่"}</h5>
@@ -189,14 +188,13 @@ function AdminCafe() {
               </div>
 
               <div className="d-flex gap-2">
-                <button type="submit" className="btn btn-success">{isEditing ? "บันทึกการเปลี่ยนแปลง" : "เพิ่มคาเฟ่"}</button>
+                <button type="submit" className="btn btn-success">{isEditing ? "บันทึก" : "เพิ่มคาเฟ่"}</button>
                 <button type="button" className="btn btn-secondary" onClick={handleCancel}>ยกเลิก</button>
               </div>
             </form>
           </div>
         </div>
       ) : (
-        /* ================== ตารางแสดงคาเฟ่ทั้งหมด ================== */
         <div className="card shadow-sm">
           <div className="card-body">
             <button className="btn btn-primary mb-3" onClick={handleAddNew}>+ เพิ่มคาเฟ่ใหม่</button>
@@ -218,7 +216,7 @@ function AdminCafe() {
                         <td>{cafe.id}</td>
                         <td>
                           <img 
-                            src={cafe.image ? `http://localhost/backend/uploads/${cafe.image}` : "https://via.placeholder.com/100?text=No+Img"} 
+                            src={cafe.image ? `http://localhost/backend/img/${cafe.image}` : "https://via.placeholder.com/100?text=No+Img"} 
                             alt={cafe.name} 
                             style={{ width: "80px", height: "60px", objectFit: "cover", borderRadius: "4px" }} 
                           />
@@ -233,7 +231,7 @@ function AdminCafe() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="5" className="text-center">ยังไม่มีข้อมูลคาเฟ่</td>
+                      <td colSpan="5" className="text-center py-4 text-muted">ยังไม่มีข้อมูลคาเฟ่ (กรุณากดเพิ่มคาเฟ่ใหม่)</td>
                     </tr>
                   )}
                 </tbody>

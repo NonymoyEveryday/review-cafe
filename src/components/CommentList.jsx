@@ -21,7 +21,7 @@ function CommentList({ comments }) {
                 <img 
                   src={
                     item.user_image 
-                      ? `http://localhost/backend/uploads/${item.user_image}` 
+                      ? `http://localhost/backend/img/${item.user_image}` 
                       : "https://via.placeholder.com/40?text=U"
                   } 
                   alt={item.username} 

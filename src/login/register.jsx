@@ -1,109 +1,127 @@
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { useNavigate } from "react-router-dom";
 
 function Register() {
   const navigate = useNavigate();
+  
+  // สร้าง State สำหรับเก็บข้อมูลฟอร์ม
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    tel: "",
+    password: "",
+  });
 
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [tel, setTel] = useState("");
-  const [image, setImage] = useState(null);
+  // State สำหรับเก็บไฟล์รูปภาพ และ รูปพรีวิว
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+
+  // จัดการเมื่อพิมพ์ข้อความ
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // จัดการเมื่อเลือกไฟล์รูปภาพ
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      // สร้าง URL จำลองเพื่อเอาไปแสดงเป็นรูปพรีวิว
+      setImagePreview(URL.createObjectURL(file)); 
+    }
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    if (!username || !email || !password || !tel || !image) {
-      alert("กรอกข้อมูลให้ครบ");
-      return;
+    // เนื่องจากมีไฟล์รูปภาพ ต้องส่งข้อมูลแบบ FormData แทน JSON
+    const data = new FormData();
+    data.append("username", formData.username);
+    data.append("email", formData.email);
+    data.append("tel", formData.tel);
+    data.append("password", formData.password);
+    
+    // ถ้ามีการเลือกรูปภาพ ให้แนบไปด้วย
+    if (imageFile) {
+      data.append("image", imageFile);
     }
-
-    const formData = new FormData();
-    formData.append("username", username);
-    formData.append("email", email);
-    formData.append("tel", tel);
-    formData.append("password", password);
-    formData.append("image", image);
 
     try {
       const res = await axios.post(
         "http://localhost/backend/login/register.php",
-        formData,
+        data,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true 
         }
       );
 
       if (res.data.status === "success") {
-        alert("สมัครสมาชิกสำเร็จ");
+        alert("สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ");
         navigate("/login");
       } else {
-        alert(res.data.message || "เกิดข้อผิดพลาด");
+        alert(res.data.message || "สมัครสมาชิกไม่สำเร็จ");
       }
-
     } catch (err) {
       console.error(err);
-      alert("เกิดข้อผิดพลาด");
+      alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
     }
   };
 
   return (
-    <Form onSubmit={handleRegister} className="w-50 mx-auto mt-5">
+    <Form onSubmit={handleRegister} className="w-50 mx-auto mt-5 p-4 border rounded shadow-sm bg-white">
       <h2 className="text-center mb-4">สมัครสมาชิก</h2>
 
-      <Form.Group className="mb-3">
-        <Form.Label>ชื่อผู้ใช้</Form.Label>
-        <Form.Control
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </Form.Group>
-
-      <Form.Group className="mb-3">
-        <Form.Label>อีเมล</Form.Label>
-        <Form.Control
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </Form.Group>
-
-      <Form.Group className="mb-3">
-        <Form.Label>เบอร์โทร</Form.Label>
-        <Form.Control
-          type="text"
-          value={tel}
-          onChange={(e) => setTel(e.target.value)}
-        />
-      </Form.Group>
-
-      <Form.Group className="mb-3">
-        <Form.Label>รหัสผ่าน</Form.Label>
-        <Form.Control
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </Form.Group>
+      {/* ================= ส่วนแสดงรูปพรีวิว ================= */}
+      <div className="text-center mb-4">
+        <div 
+          className="mx-auto border d-flex justify-content-center align-items-center overflow-hidden" 
+          style={{ width: "120px", height: "120px", borderRadius: "50%", backgroundColor: "#f8f9fa" }}
+        >
+          {imagePreview ? (
+            <img src={imagePreview} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            <span className="text-muted small">ไม่มีรูปภาพ</span>
+          )}
+        </div>
+      </div>
 
       <Form.Group className="mb-3">
         <Form.Label>รูปโปรไฟล์</Form.Label>
-        <Form.Control
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImage(e.target.files[0])}
-        />
+        <Form.Control type="file" accept="image/*" onChange={handleImageChange} />
       </Form.Group>
 
-      <Button type="submit" className="w-100">
-        สมัครสมาชิก
-      </Button>
+      <Form.Group className="mb-3">
+        <Form.Label>ชื่อผู้ใช้ (Username)</Form.Label>
+        <Form.Control type="text" name="username" placeholder="ตั้งชื่อผู้ใช้" value={formData.username} onChange={handleChange} required />
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>อีเมล (Email)</Form.Label>
+        <Form.Control type="email" name="email" placeholder="example@email.com" value={formData.email} onChange={handleChange} required />
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>เบอร์โทรศัพท์</Form.Label>
+        <Form.Control type="text" name="tel" placeholder="08xxxxxxxx" value={formData.tel} onChange={handleChange} required />
+      </Form.Group>
+
+      <Form.Group className="mb-4">
+        <Form.Label>รหัสผ่าน</Form.Label>
+        <Form.Control type="password" name="password" placeholder="ตั้งรหัสผ่าน" value={formData.password} onChange={handleChange} required />
+      </Form.Group>
+
+      <div className="d-flex justify-content-center gap-3">
+        <Button variant="success" type="submit">
+          ยืนยันการสมัคร
+        </Button>
+        <Button variant="outline-secondary" type="button" onClick={() => navigate('/login')}>
+          กลับไปหน้าเข้าสู่ระบบ
+        </Button>
+      </div>
     </Form>
   );
 }

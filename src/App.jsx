@@ -9,52 +9,44 @@ import Admin from "./pages/Admin";
 import Login from "./login/login";
 import Register from "./login/register";
 import Home from "./components/Home";
+import AdminCategory from "./pages/AdminCategory"; 
 import AdminCafe from "./pages/AdminCafe";
+import AdminReview from "./pages/Adminreview"; 
+
 
 function App() {
-  // 1. เปลี่ยนจากแค่ role เป็นเก็บ user ทั้งก้อน (เช่น { username: "...", role: "admin" })
-  const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null);
 
+  // ให้ App.jsx เป็นคนเช็ค Login ที่เดียวพอ
   useEffect(() => {
     axios.get("http://localhost/backend/login/login.php", {
       withCredentials: true
     }).then(res => {
-      // ตรวจสอบว่า backend ส่งข้อมูลผู้ใช้กลับมาหรือไม่ (ปรับแก้ตามโครงสร้าง backend ของคุณ)
-      if (res.data.role) {
-        setUser({
-          username: res.data.username || "User",
-          role: res.data.role
-        });
-      }
+      setRole(res.data.role);
     }).catch(err => console.error(err));
   }, []);
 
   return (
     <>
-      {/* 2. ส่งข้อมูล user ไปให้ Navbar ทำการแสดงผลซ่อน/โชว์ */}
-      <Navbar user={user} setUser={setUser} />
-
+      {/* ส่ง role ที่เช็คได้ ไปให้ Navbar เอาไปใช้ต่อ */}
+      <Navbar role={role} setRole={setRole} />
+      
       <div className="container mt-4">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cafes" element={<CafeList />} />
-          <Route path="/cafe/:id" element={<CafeDetail />} />
-
-          <Route
-            path="/admin"
-            element={
-              user?.role === "admin" ? <Admin /> : <Navigate to="/login" />
-            }
-          />
-          <Route
-            path="/admin/cafes"
-            element={user?.role === "admin" ? <AdminCafe /> : <Navigate to="/login" />}
-          />
-
-          {/* 3. ส่ง setUser ไปให้หน้า Login อัปเดตตอนเข้าระบบผ่าน */}
-          <Route path="/login" element={<Login setUser={setUser} />} />
+          <Route path="/cafe/:id" element={<CafeDetail role={role} />} />
+          
+          {/* โซนแอดมิน (เอาจุดหน้า /admin ออกแล้ว) */}
+          <Route path="/admin" element={role === "admin" ? <Admin /> : <Navigate to="/login" />} />
+          <Route path="/admin/categories" element={role === "admin" ? <AdminCategory /> : <Navigate to="/login" />} />
+          <Route path="/admin/details" element={role === "admin" ? <AdminCafe /> : <Navigate to="/login" />} />
+          <Route path="/admin/reviews" element={role === "admin" ? <AdminReview /> : <Navigate to="/login" />} />
+          
+          <Route path="/login" element={<Login setRole={setRole} />} />
           <Route path="/register" element={<Register />} />
-          <Route path="*" element={<h1>Page Not Found</h1>} />
+          <Route path="*" element={<h1 className="text-center mt-5">404 - Page Not Found</h1>} />
+          
         </Routes>
       </div>
     </>
