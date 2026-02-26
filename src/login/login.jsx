@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
-function Login() {
+function Login({ setRole }) {
   const navigate = useNavigate();
   const [username, setusername] = useState("");
   const [password, setPassword] = useState("");
-  const handleLogin = async () => {
 
+  const handleLogin = async () => {
     try {
       const res = await axios.post(
         "http://localhost/backend/login/login.php",
@@ -18,8 +18,12 @@ function Login() {
       );
 
       if (res.data.status === "success") {
-
         const user = res.data.user;
+
+        // 2. สั่งอัปเดต role ไปยัง App.jsx ทันทีที่ล็อกอินผ่าน
+        if (setRole) {
+          setRole(user?.role);
+        }
 
         if (user?.role === "admin") {
           alert("เข้าสู่ระบบสำเร็จในฐานะ Admin");
@@ -37,7 +41,7 @@ function Login() {
       console.error(err);
     }
   };
-
+  
   return (
     <Form onSubmit={(e) => {
       e.preventDefault();
