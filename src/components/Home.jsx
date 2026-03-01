@@ -44,8 +44,8 @@ function Home() {
     <div className="mb-5">
       
       <div className="hero-section text-center text-white d-flex flex-column justify-content-center align-items-center mb-5 shadow">
-        <h1 className="fw-bold display-4 mb-3">ค้นหาคาเฟ่ที่ใช่ สำหรับคุณ ☕</h1>
-        <p className="lead mb-4">รีวิวคาเฟ่ บรรยากาศดี กาแฟอร่อย ที่เรารวบรวมมาให้คุณแล้ว</p>
+        <h1 className="fw-bold display-4 mb-3"> แอ่วไหนดี </h1>
+        <p className="lead mb-4">หาที่แอ่ว ให้กับคนหลายแนว ตั้งแต่ลูกคุณหนูยันหมูตกน้ำ ปะเซาะแอ่วกัน </p>
         
         <form onSubmit={handleSearch} className="b1">
           <input 
@@ -59,7 +59,7 @@ function Home() {
           <button 
             type="submit" 
             className="btn btn-primary btn-lg px-4 border-0"
-            style={{ borderRadius: "0 30px 30px 0", backgroundColor: "#ff8c00" }}
+            style={{ borderRadius: "0 30px 30px 0", backgroundColor: "#7a6c9e" }}
           >
             ค้นหาเลย
           </button>
@@ -69,7 +69,7 @@ function Home() {
      
       <div className="container mt-5">
         <div className="d-flex justify-content-between align-items-end mb-4">
-          <h2 className="fw-bold mb-0">🔥 คาเฟ่ยอดนิยม</h2>
+          <h2 className="fw-bold mb-0">สถานที่คนแอ่วหลาย</h2>
           <button className="btn btn-outline-secondary" onClick={() => navigate('/cafes')}>
             ดูคาเฟ่ทั้งหมด &raquo;
           </button>
